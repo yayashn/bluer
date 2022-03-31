@@ -5,6 +5,7 @@ import { useState, useRef, MutableRefObject, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import './tailwind.css';
 import del from './assets/delete';
+import edit from './assets/edit';
 
 const pages:any = {
   "home": "/",
@@ -23,6 +24,8 @@ export default () => {
   const [posts, setPosts] = useState([{name: 'First Last', text: createIpsum(), key: 0}]);
   const inputRef:MutableRefObject<any> = useRef(null);
   const [alert, setAlert]: any = useState(null);
+  const [editPost, setEditPost]: any = useState(null);
+  const editPostRef:MutableRefObject<any> = useRef(null);
 
   useEffect(() => {
     setAlert(null);
@@ -50,43 +53,58 @@ export default () => {
           })}
         </div>
       </Navbar>
+      {alert !== null && <Blackout>
+          <Alert>
+            <div className='mb-5'>Are you sure you want to delete this post?</div>
+            <div className="flex justify-between w-full">
+              <NormalButton
+                onTap={()=>setAlert(null)}
+              >Cancel</NormalButton>
+              <DeleteButton onTap={()=>setPosts(posts.filter(p => p.key !== alert))}>
+                Delete
+              </DeleteButton>
+            </div>
+          </Alert>
+        </Blackout>}
       <Routes>
         <Route path='/' element={
-          <div className='flex mx-5 justify-center'>
-            <div className='flex flex-col'>
+          <Container>
+            <div className='flex flex-col flex-grow'>
               <Post>
                 <ProfilePic/>
                 <PostInput ref={el => inputRef.current = el}/>
                 <Button onClick={()=>{
-                  setPosts([{name: 'User Name', text: inputRef.current.value, key: posts.length}, ...posts])
+                  setPosts([{name: 'User Name', text: inputRef.current.value, key: posts.length}, ...posts]);
+                  inputRef.current.value = inputRef.current.defaultValue;
                 }}>Post</Button>
               </Post>
               {posts.map((post, i)=> {
                 return (
                   <Post key={i}>
                     <ProfilePic/>
-                    <div className='flex flex-col'>
+                    <div className='flex flex-col flex-grow w-auto'>
                       <span className='font-bold'>{post.name}</span>
-                      <p className='w-11/12'>{post.text}</p>
+                      {editPost == post.key
+                      ? <>
+                          <EditInput defaultValue={post.text} ref={(el: any) => editPostRef.current = el}></EditInput>
+                          <ButtonContainer>
+                              <NormalButton onClick={()=>{setEditPost(null)}}>Cancel</NormalButton>
+                              <NormalButton onClick={()=>{
+                                post.text = editPostRef.current.value;
+                                setEditPost(null);
+                              }}>Confirm</NormalButton>
+                          </ButtonContainer>
+                        </>
+                      : <p className='w-11/12'>{post.text}</p>}
                     </div>
-                    <div className='absolute bottom-0 right-0'>
-                      <button onClick={()=>{
+                    <div className='absolute top-0 right-0 flex p-3'>
+                      <IconButton onClick={()=>setEditPost(post.key)}>
+                        {edit}
+                      </IconButton>
+                      <IconButton onClick={()=>{
                         setAlert(post.key);
-                      }}>{del}</button>
+                      }}>{del}</IconButton>
                     </div>
-                    {alert == post.key && <Blackout>
-                      <Alert>
-                        <div className='mb-5'>Are you sure you want to delete this post?</div>
-                        <div className="flex justify-between">
-                          <CancelButton
-                            onTap={()=>setAlert(null)}
-                          >Cancel</CancelButton>
-                          <DeleteButton onTap={()=>setPosts(posts.filter(p => p.key !== post.key))}>
-                            Delete
-                          </DeleteButton>
-                        </div>
-                      </Alert>
-                    </Blackout>}
                   </Post>
                 )
               })}
@@ -94,7 +112,7 @@ export default () => {
             <div className='flex flex-col'>
               <Bio></Bio>
             </div>
-          </div>
+          </Container>
         }/>
         <Route path='/profile' element={<>profile</>}/>
       </Routes>
@@ -102,19 +120,26 @@ export default () => {
   )
 }
 
-const Navbar = styled.nav.attrs({className: `
+const Container = styled.div.attrs({className: `
   flex
-  rounded-xl
-  bg-slate-900
   relative
   justify-between
-  content-center
-  px-5
-  my-5
   mr-10
   -translate-x-2/4
   left-2/4
+`})`
+  max-width: 900px;
+`
+
+const Navbar: any = styled(Container).attrs({className: `
+  rounded-xl
+  bg-slate-900
+  px-5
+  my-5
+  -translate-x-2/4
+  left-2/4
 `})`max-width: 900px;`
+
 
 const Page = styled(motion(Link)).attrs({className: `
   py-3
@@ -160,10 +185,22 @@ const PostInput = styled.textarea.attrs({
   className: `
     bg-transparent
     resize-none
-    py-4
     w-8/12
     h-full
-`})`outline: none;`
+    mt-2
+`})`
+  min-height: 96px;
+  outline: none;
+`
+
+const EditInput: any = styled(PostInput).attrs({
+  placeholder: "",
+  className: `
+  mt-0
+  mb-5
+`})`
+  width: 92%;
+`
 
 const Button = styled(motion.button).attrs({
   transition: {
@@ -184,7 +221,26 @@ const Button = styled(motion.button).attrs({
     drop-shadow-md
 `})``
 
-const DeleteButton: any = styled(Button).attrs({
+
+const NormalButton = styled(motion.button).attrs({
+  transition: {
+    duration: 0.2
+  },
+  whileHover: {
+    backgroundColor: 'rgb(46, 86, 203)',
+  },
+
+  className:`
+    bottom-3
+    right-3
+    bg-blue-900
+    px-5 
+    py-1
+    rounded-lg
+    drop-shadow-md
+`})``
+
+const DeleteButton: any = styled(NormalButton).attrs({
   whileHover: {
     backgroundColor: 'rgb(255,0,0)',
   },
@@ -193,11 +249,6 @@ const DeleteButton: any = styled(Button).attrs({
     bg-red-900
 `})``
 
-const CancelButton: any = styled(Button).attrs({
-  className:`
-    sticky
-`
-})``
 
 const Bio = styled.div.attrs({className: `
   relative
@@ -208,19 +259,6 @@ const Bio = styled.div.attrs({className: `
   px-35
 `})``
 
-const Blackout = styled.div.attrs({className: `
-  flex
-  justify-center
-  items-center
-  fixed
-  top-0
-  left-0
-  w-full 
-  h-full 
-  bg-black 
-  z-10
-`})`background-color: rgba(0,0,0,0.8);`
-
 const Alert = styled.div.attrs({className: `
   flex
   flex-col 
@@ -228,11 +266,23 @@ const Alert = styled.div.attrs({className: `
   content-center 
   bg-slate-900 
   w-80 
-  h-40 
+  h-40
   p-10
   pt-12
   rounded-xl
 `})``
+
+const Blackout = styled.div.attrs({className: `
+  fixed
+  flex
+  justify-center
+  items-center
+  top-0
+  left-0
+  w-screen
+  h-screen
+  z-10
+`})`background-color: rgba(0,0,0,0.7);`
 
 const ProfilePic = styled.div.attrs({className: `
   rounded-full
@@ -242,3 +292,22 @@ const ProfilePic = styled.div.attrs({className: `
   aspect-square 
   bg-white
 `})``
+
+const IconButton = styled(motion.button).attrs({
+  whileHover: {
+    transform: "translateY(-3px)"
+  }
+})``
+
+const ButtonContainer = styled.div.attrs({className:`
+  absolute
+  flex
+  justify-end
+  w-full
+  bottom-3
+  right-3
+`})`
+  & > button {
+    margin-left: 1rem;
+  }
+`
