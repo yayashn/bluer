@@ -10,4 +10,4 @@ export const Post = styled.div.attrs({
   p-2
   pb-4
   mb-5
-` })`width: 96%;`;
+` })`width: 560px;`;

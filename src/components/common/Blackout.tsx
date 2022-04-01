@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import alertState from '../../atoms/alertState';
 import postsState from '../../atoms/postsState';
 import { Alert } from './Alert';
-import { DeleteButton } from './DeleteButton';
+import { DeleteButton } from '../home/DeleteButton';
 import Button from './Button';
 
 export default () => {

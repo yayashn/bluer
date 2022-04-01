@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Container } from './Container';
+import { Container } from '../common/Container';
 
 export const Navbar: any = styled(Container).attrs({
   className: `

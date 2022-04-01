@@ -7,7 +7,7 @@ import Blackout  from './components/common/Blackout';
 import postsState from './atoms/postsState';
 import { useRecoilState } from 'recoil';
 import alertState from './atoms/alertState';
-import Navbar from './components/Navbar/index';
+import Navbar from './components/navbar/index';
 
 const placeholderText:any = [];
 for (let i = 0; i < 10; i++) {

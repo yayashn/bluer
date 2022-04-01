@@ -11,5 +11,6 @@ export const Alert = styled.div.attrs({
   h-40
   p-10
   pt-12
+  -mt-84
   rounded-xl
 ` })``;

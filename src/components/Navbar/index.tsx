@@ -1,7 +1,7 @@
 import { MutableRefObject, useRef, useState } from "react";
-import { Navbar } from "../common/Navbar";
-import { Page } from "../common/Page";
-import { PageLine } from "../common/PageLine";
+import { Navbar } from "./Navbar";
+import { Page } from "./Page";
+import { PageLine } from "./PageLine";
 
 const pages:any = {
     "home": "/",

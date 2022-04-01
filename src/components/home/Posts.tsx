@@ -1,7 +1,7 @@
 import edit from "../../assets/edit";
-import { EditInput } from "../common/EditInput";
+import { EditInput } from "./EditInput";
 import { IconButton } from "../common/IconButton";
-import { Post } from "../common/Post";
+import { Post } from "./Post";
 import { ProfilePic } from "../common/ProfilePic";
 import { ButtonContainer } from "./ButtonContainer";
 import NormalButton  from "../common/Button";

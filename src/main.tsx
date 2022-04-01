@@ -1,13 +1,12 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
 import { RecoilRoot } from 'recoil';
 import App from './App';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <RecoilRoot>
-      <App />
-    </RecoilRoot>
-  </React.StrictMode>,
-  document.getElementById('root')
-)
+const container: any = document.getElementById('root');
+createRoot(container).render( 
+ <StrictMode>
+  <RecoilRoot>
+    <App />
+  </RecoilRoot>
+</StrictMode>)
