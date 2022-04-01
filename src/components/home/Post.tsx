@@ -4,10 +4,9 @@ export const Post = styled.div.attrs({
   className: `
   relative
   flex
-  rounded-xl
+  rounded-lg
   bg-slate-900
-  max-w-xl
   p-2
   pb-4
   mb-5
-` })`width: 560px;`;
+` })`width: 100% !important; min-width: 534px; max-width: 560px;`;

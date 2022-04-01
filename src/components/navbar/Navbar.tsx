@@ -3,7 +3,7 @@ import { Container } from '../common/Container';
 
 export const Navbar: any = styled(Container).attrs({
   className: `
-  rounded-xl
+  rounded-lg
   bg-slate-900
   px-5
   my-5

@@ -6,7 +6,7 @@ export const Page = styled(motion(Link)).attrs({
   className: `
   py-3
   mx-6
-  rounded-xl
+  rounded-lg
   cursor-pointer
   capitalize
 ` })``;

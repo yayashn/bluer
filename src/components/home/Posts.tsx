@@ -5,7 +5,7 @@ import { Post } from "./Post";
 import { ProfilePic } from "../common/ProfilePic";
 import { ButtonContainer } from "./ButtonContainer";
 import NormalButton  from "../common/Button";
-import { useState, MutableRefObject, useRef } from "react";
+import { useState, MutableRefObject, useRef, useEffect } from "react";
 import { useRecoilState } from "recoil";
 import postsState from "../../atoms/postsState";
 import del from "../../assets/delete";
@@ -15,11 +15,17 @@ export default () => {
     const [posts, setPosts] = useRecoilState(postsState);
     const [editPost, setEditPost]: any = useState(null);
     const editPostRef:MutableRefObject<any> = useRef(null);
-    const [alert, setAlert] = useRecoilState(alertState);
+    const [_, setAlert] = useRecoilState(alertState);
     
+    useEffect(() => {
+      setEditPost(null);
+    }, [posts])
+    
+
     return (
         <>
         {Object.entries(posts).slice(0).reverse().map(([key, post]: any)=> {
+            
             return (
               <Post key={key}>
                 <ProfilePic/>
@@ -27,10 +33,14 @@ export default () => {
                   <span className='font-bold'>{post.name}</span>
                   {editPost == key
                   ? <>
-                      <EditInput defaultValue={post.text} ref={(el: any) => editPostRef.current = el}></EditInput>
+                      <EditInput id="edit" defaultValue={post.text} ref={(el: any) => editPostRef.current = el}></EditInput>
                       <ButtonContainer>
                           <NormalButton onClick={()=>{setEditPost(null)}}>Cancel</NormalButton>
                           <NormalButton onClick={()=>{
+                            if(editPostRef.current.value.trim() === '') {
+                              setEditPost(null);
+                              return;
+                            }
                             const newPosts: any = {...posts};
                             newPosts[key] = {name: post.name, text: editPostRef.current.value};
                             setPosts(newPosts);
@@ -41,12 +51,12 @@ export default () => {
                   : <p className='w-11/12'>{post.text}</p>}
                 </div>
                 <div className='absolute top-0 right-0 flex p-3'>
-                  <IconButton onClick={()=>setEditPost(key)}>
+                  <IconButton onClick={()=>{
+                      setEditPost(key);
+                    }}>
                     {edit}
                   </IconButton>
-                  <IconButton onClick={()=>{
-                    setAlert(key);
-                  }}>{del}</IconButton>
+                  <IconButton onClick={()=>setAlert(key)}>{del}</IconButton>
                 </div>
               </Post>
             )

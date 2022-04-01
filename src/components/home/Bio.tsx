@@ -4,8 +4,20 @@ export const Bio = styled.div.attrs({
   className: `
     relative
     flex
-    rounded-xl
+    flex-col
+    items-center
+    rounded-lg
     bg-slate-900
-    w-full
-    h-20
-` })``;
+    p-4
+    mb-5
+    lg:mb-0
+` })`
+  height: 400px;
+  @media only screen and (max-width: 1023px) {
+    width: 560px;
+    height: auto;
+  }
+  & .pic {
+    height: 70px;
+  }
+`;

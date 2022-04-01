@@ -17,9 +17,10 @@ for (let i = 0; i < 10; i++) {
 export default () => {
   const [posts, setPosts] = useRecoilState(postsState);
   const [alert, setAlert] = useRecoilState(alertState);
-
+  
   useEffect(() => {
     setAlert(null);
+    
   }, [posts])
 
   return (
