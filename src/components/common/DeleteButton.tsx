@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { NormalButton } from './NormalButton';
+import Button  from './Button';
 
-export const DeleteButton: any = styled(NormalButton).attrs({
+export const DeleteButton: any = styled(Button).attrs({
   whileHover: {
     backgroundColor: 'rgb(255,0,0)',
   },

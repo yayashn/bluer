@@ -4,21 +4,34 @@ import alertState from '../../atoms/alertState';
 import postsState from '../../atoms/postsState';
 import { Alert } from './Alert';
 import { DeleteButton } from './DeleteButton';
-import { NormalButton } from './NormalButton';
+import Button from './Button';
 
 export default () => {
-  const [posts, setPosts] = useRecoilState(postsState);
-  const [alert, setAlert] = useRecoilState(alertState);
+  const [posts, setPosts]: any = useRecoilState(postsState);
+  const [alert, setAlert]: any = useRecoilState(alertState);
 
   return (
     <Blackout>
       <Alert>
         <div className='mb-5'>Are you sure you want to delete this post?</div>
         <div className="flex justify-between w-full">
-          <NormalButton
+          <Button
             onTap={()=>setAlert(null)}
-          >Cancel</NormalButton>
-          <DeleteButton onTap={()=>setPosts(posts.filter(p => p.key !== alert))}>
+          >Cancel</Button>
+          <DeleteButton onClick={
+            ()=>{
+              const newPosts: any = {};
+              let found = 0;
+              Object.entries(posts).map(([i,v]: any)=> {
+                if(i == alert) {
+                  found = 1;
+                }
+                if(i !== alert) {
+                  newPosts[i - found] = v;
+                }
+              })
+              setPosts(newPosts);
+            }}>
             Delete
           </DeleteButton>
         </div>
