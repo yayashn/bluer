@@ -1,15 +1,18 @@
 import Bio from './Bio';
-import { useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useRef, useState } from 'react';
 import styled from 'styled-components';
-import  Box  from '../common/Box';
+import Box from '../common/Box';
 import Avatar from '../common/Avatar';
 import Position from '../common/Position';
-import { createPost } from '../../firebase/post';
+import { createPost, deletePost, editPost } from '../../firebase/post';
+import dots from '../../assets/dots';
 
 export default (props: {user: any, posts: any}) => {
     const [disabled, setDisabled] = useState(true);
     const [big, setBig] = useState(window.innerWidth >= 640);
     const inputRef:React.MutableRefObject<any> = useRef(null);
+    const [edit, setEdit]: [number | null, Dispatch<SetStateAction<any>>] = useState(null);
+    const editRefs:React.MutableRefObject<any> = useRef([]);
 
     let username = '';
     let name = '';
@@ -17,7 +20,6 @@ export default (props: {user: any, posts: any}) => {
         username = props.user.username;
         name = props.user.name !== '' ? props.user.name : username;
     }
-
 
     window.addEventListener('resize', () => {
         setBig(window.innerWidth >= 640);
@@ -37,14 +39,17 @@ export default (props: {user: any, posts: any}) => {
                                     try {
                                         setTimeout(() => {
                                             createPost(props.user.username, inputRef.current.value);
-                                        }, 500);
+                                            inputRef.current.value = '';
+                                            inputRef.current.blur();
+                                            setDisabled(true);
+                                        }, 100);
                                     } catch(error) {console.log(error)}
                                 }}
                                 className={`btn btn-sm mt-2 w-36 ${disabled ? 'btn-disabled' : 'btn-primary'}`}>Post</button>
                             </div>
                         </Box>
                         <div className='flex flex-col-reverse'>
-                            {props.posts && Object.values(props.posts).map((p: any, i: number) => {
+                            {props.posts && Object.entries(props.posts).map(([k, p]: any, i: number) => {
                                 return (
                                     <Box key={i} className='p-5 pb-4 mt-5'>
                                         <div className="flex mb-4">
@@ -54,7 +59,35 @@ export default (props: {user: any, posts: any}) => {
                                                 <span className='text-sm'>@{username}</span>
                                             </Position>
                                         </div>
-                                        <p>{p}</p>
+                                        {edit == i 
+                                            ? <div className='flex flex-col'>
+                                                <textarea ref={el => editRefs.current[i] = el} className='bg-primary rounded-sm text-black placeholder-black resize-none' defaultValue={p} placeholder={p}></textarea>
+                                                <div className='flex w-full justify-end mt-3'>
+                                                    <button onClick={setEdit} className='btn btn-sm btn-secondary mr-2'>Cancel</button>
+                                                    <button onClick={e=>{
+                                                        setTimeout(() => {
+                                                            editPost(username, editRefs.current[i].value, k);
+                                                            setEdit(null);
+                                                        }, 100);
+                                                    }} className='btn btn-sm btn-primary'>Confirm</button>
+                                                </div>
+                                              </div>
+                                            : <p>{p}</p>
+                                        }
+                                        <div className='absolute right-5 flex justify-between w-15'>
+                                            <div className="dropdown dropdown-end">
+                                                <label className='cursor-pointer' tabIndex={0}>{dots}</label>
+                                                <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-32">
+                                                    <li><button onClick={(e)=>{setEdit(i); e.currentTarget!.parentElement!.parentElement!.blur()}}>Edit</button></li>
+                                                    <li><button onClick={(e)=>{
+                                                        setTimeout(() => {
+                                                            deletePost(username, k);
+                                                        }, 100);
+                                                        e.currentTarget!.parentElement!.parentElement!.blur();
+                                                        }}>Delete</button></li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </Box>
                                 )
                             })}

@@ -8,7 +8,6 @@ import { auth, db } from "./firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { onValue, ref } from "firebase/database";
-import { createPost } from "./firebase/post";
 
 export default () => {
   const [user, setUser]:any = useState(null);

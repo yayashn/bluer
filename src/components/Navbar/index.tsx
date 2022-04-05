@@ -18,7 +18,7 @@ export default (props: {user: any, setUser: any}) => {
                                     <span className="text-3xl">{props.user.email.split('')[0]}</span>
                                 </div>
                             </label>
-                            <ul tabIndex={0} className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52">
+                            <ul tabIndex={0} className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52">
                                 <li><Link to='/profile' className="justify-between">Profile</Link></li>
                                 <li><Link to='/settings'>Settings</Link></li>
                                 <li><Link to='/' onClick={async ()=>{await logout(); props.setUser(null)}}>Log out</Link></li>
