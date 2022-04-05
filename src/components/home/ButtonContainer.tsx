@@ -1,15 +1,13 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-export const ButtonContainer = styled.div.attrs({
-  className: `
-  absolute
-  flex
-  justify-end
-  w-full
-  bottom-3
-  right-3
-` })`
-  & > button {
-    margin-left: 1rem;
-  }
-`;
+export default styled.div.attrs({className:`
+        flex
+        justify-start
+        ml-5
+        sm:ml-0
+        sm:justify-center
+    `})`
+    & button:nth-child(1) {
+        margin-right: 10px;
+    }
+`

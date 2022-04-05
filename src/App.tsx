@@ -1,37 +1,57 @@
-import Home from './components/home/index';
-import createIpsum from 'corporate-ipsum';
-import { useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Home from "./components/home";
+import Login from "./components/login";
+import Navbar from "./components/navbar";
+import Profile from "./components/profile";
 import './tailwind.css';
-import Blackout  from './components/common/Blackout';
-import postsState from './atoms/postsState';
-import { useRecoilState } from 'recoil';
-import alertState from './atoms/alertState';
-import Navbar from './components/navbar/index';
-
-const placeholderText:any = [];
-for (let i = 0; i < 10; i++) {
-  placeholderText.push(createIpsum(2));
-}
+import { auth, db } from "./firebase-config";
+import { onAuthStateChanged } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { onValue, ref } from "firebase/database";
+import { createPost } from "./firebase/post";
 
 export default () => {
-  const [posts, setPosts] = useRecoilState(postsState);
-  const [alert, setAlert] = useRecoilState(alertState);
+  const [user, setUser]:any = useState(null);
+  const [users, setUsers]: any = useState(null);
+  const [posts, setPosts] = useState(null);
   
   useEffect(() => {
-    setAlert(null);
-    
-  }, [posts])
+    const on: any = [];
+    on.push(onValue(ref(db, `/users/`), snapshot => {
+        const data = snapshot.val();
+        setUsers(data);
+    }));
+
+    return () => {
+        on.map((v: any) => {
+          v();
+        })
+    }
+  },[])
+
+  useEffect(() => {
+    if(user) {
+      const on = onValue(ref(db, `/posts/${user.email.split('@')[0]}`), snapshot => {
+        const data = snapshot.val();
+        setPosts(data);
+      });
+      return () => {
+        on();
+      }
+    }
+  }, [user])
+
+  onAuthStateChanged(auth, (currentUser) => {
+    setUser(currentUser);
+  })
 
   return (
-    <Router>
-      <Navbar/>
-      {alert !== null && <Blackout/>}
-      <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route path='/profile' element={<>profile</>}/>
-      </Routes>
-    </Router>
+    <BrowserRouter>
+        {user?.accessToken && <Navbar user={user} setUser={setUser}/>}
+        <Routes>
+          <Route path="/" element={user?.accessToken && <Home posts={posts} user={users && users[user.email.split('@')[0]]}/> || !user && <Login/>}/>
+          <Route path="/profile" element={<Profile/>}/>
+        </Routes>
+    </BrowserRouter>
   )
 }
-

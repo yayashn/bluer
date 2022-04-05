@@ -1,37 +1,32 @@
-import { MutableRefObject, useRef, useState } from "react";
-import { Navbar } from "./Navbar";
-import { Page } from "./Page";
-import { PageLine } from "./PageLine";
+import { Link } from "react-router-dom";
+import Position from "../common/Position";
+import logout from "../../firebase/logout";
 
-const pages:any = {
-    "home": "/",
-    "profile": "/profile"
-}  
-
-export default () => {
-    const linkRef:MutableRefObject<any> = useRef([]);
-    let currentPage:string | undefined = Object.keys(pages).find(k=>pages[k]===window.location.pathname);
-    const [hoveredLink, setHoveredLink] = useState(currentPage);
+export default (props: {user: any, setUser: any}) => {
     return (
-        <Navbar>
-            <h1 className="text-white text-3xl p-1">sma</h1>
-            <div className="flex">
-            {Object.keys(pages).map((page: string, i: number) => {
-                return (
-                <Page
-                    key={i}
-                    to={pages[page]}
-                    layout 
-                    onMouseDown={()=>{setHoveredLink(page); currentPage=page}} 
-                    onMouseEnter={()=>setHoveredLink(page)}
-                    onMouseLeave={()=>setHoveredLink(currentPage)} 
-                    ref={el => linkRef.current[page] = el}>
-                    {page}
-                    {hoveredLink == page && <PageLine/>}
-                </Page>
-                )
-            })}
+        <Position position="center">
+            <div className="flex justify-center my-5 w-full max-w-5xl">
+                <div className="navbar w-11/12 bg-base-100 shadow-xl rounded-box">
+                    <div className="flex-1"><Link to='/' className="btn btn-ghost normal-case text-xl">bluer</Link></div>
+                    <div className="flex-none">
+                        <div className="dropdown dropdown-end">
+                            <span className="mr-3 capitalize">{props.user.email.split('@')[0]}</span>
+                        </div>
+                        <div className="dropdown dropdown-end">
+                            <label tabIndex={0} className="btn btn-ghost btn-circle avatar placeholder">
+                                <div className="w-10 rounded-full">
+                                    <span className="text-3xl">{props.user.email.split('')[0]}</span>
+                                </div>
+                            </label>
+                            <ul tabIndex={0} className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52">
+                                <li><Link to='/profile' className="justify-between">Profile</Link></li>
+                                <li><Link to='/settings'>Settings</Link></li>
+                                <li><Link to='/' onClick={async ()=>{await logout(); props.setUser(null)}}>Log out</Link></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </Navbar>
+        </Position>
     )
 }
