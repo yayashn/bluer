@@ -1,6 +1,6 @@
-export default (props: {children: React.ReactNode, disabled: boolean}) => {
+export default (props: {children: React.ReactNode, disabled: boolean, onClick: any}) => {
     return (
-        <button className={`btn btn-sm ${props.disabled && 'btn-outline'} btn-primary`}>
+        <button onClick={props.onClick} className={`btn btn-sm ${props.disabled && 'btn-outline'} btn-primary`}>
             {props.children}
         </button>
     )

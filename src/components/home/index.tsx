@@ -16,10 +16,13 @@ export default (props: {user: any, posts: any}) => {
 
     let username = '';
     let name = '';
-    if(props.user) {
-        username = props.user.username;
-        name = props.user.name !== '' ? props.user.name : username;
+    const setNames = () => {
+        if(props.user) {
+            username = props.user.username;
+            name = props.user.name !== '' ? props.user.name : username;
+        }
     }
+    setNames();
 
     window.addEventListener('resize', () => {
         setBig(window.innerWidth >= 640);
@@ -53,7 +56,7 @@ export default (props: {user: any, posts: any}) => {
                                 return (
                                     <Box key={i} className='p-5 pb-4 mt-5'>
                                         <div className="flex mb-4">
-                                            <Avatar className='p-1 mr-2'/>
+                                            <Avatar username={username} className='p-1 mr-2'/>
                                             <Position className='flex-col'>
                                                 <span className='text-xl font-bold'>{name}</span>
                                                 <span className='text-sm'>@{username}</span>
@@ -77,7 +80,7 @@ export default (props: {user: any, posts: any}) => {
                                         <div className='absolute right-5 flex justify-between w-15'>
                                             <div className="dropdown dropdown-end">
                                                 <label className='cursor-pointer' tabIndex={0}>{dots}</label>
-                                                <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-200 rounded-box w-32">
+                                                <ul tabIndex={0} className="dropdown-content menu p-2 shadow-md bg-base-200 rounded-box w-32">
                                                     <li><button onClick={(e)=>{setEdit(i); e.currentTarget!.parentElement!.parentElement!.blur()}}>Edit</button></li>
                                                     <li><button onClick={(e)=>{
                                                         setTimeout(() => {

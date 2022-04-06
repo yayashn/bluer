@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
 import Home from "./components/home";
 import Login from "./components/login";
 import Navbar from "./components/navbar";
@@ -13,6 +13,7 @@ export default () => {
   const [user, setUser]:any = useState(null);
   const [users, setUsers]: any = useState(null);
   const [posts, setPosts] = useState(null);
+  const [loading, setLoading] = useState(true);
   
   useEffect(() => {
     const on: any = [];
@@ -42,13 +43,14 @@ export default () => {
 
   onAuthStateChanged(auth, (currentUser) => {
     setUser(currentUser);
+    setLoading(false);
   })
 
   return (
     <BrowserRouter>
-        {user?.accessToken && <Navbar user={user} setUser={setUser}/>}
+        {!loading && user?.accessToken && <Navbar user={user} setUser={setUser}/>}
         <Routes>
-          <Route path="/" element={user?.accessToken && <Home posts={posts} user={users && users[user.email.split('@')[0]]}/> || !user && <Login/>}/>
+          <Route path="/" element={!loading && !user?.accessToken ? <Login/> : user?.accessToken && <Home posts={posts} user={users && users[user.email.split('@')[0]]}/>}/>
           <Route path="/profile" element={<Profile/>}/>
         </Routes>
     </BrowserRouter>
