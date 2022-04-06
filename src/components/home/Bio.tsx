@@ -2,19 +2,20 @@ import Avatar from "../common/Avatar";
 import HollowButton from "../common/HollowButton";
 import Box from "../common/Box";
 import ButtonContainer from "./ButtonContainer";
-import { User } from "firebase/auth";
 import dots from "../../assets/dots";
 import { useEffect, useRef, useState } from "react";
 import { editInfo, follow, rmFollow, unfollow } from "../../firebase/profile";
+import { useParams } from "react-router-dom";
 
-export default (props: {className?: string, user: {username: string, name: string, bio: string, following: any, followers: any}}) => {
+export default (props: {className?: string, username: string, user: {username: string, name: string, bio: string, following: any, followers: any}}) => {
     const [edit, setEdit] = useState(false);
     const bioRef:any = useRef(null);
     const nameRef:any = useRef(null);
     const [username, setUsername] = useState('');
     const [name, setName] = useState('');
     const [followList, setFollowList]:['following' | 'followers' | null, any] = useState(null);
-
+    const { userPage } = useParams();
+    
    useEffect(() => {
      try {
         setUsername(props.user.username);
@@ -48,16 +49,18 @@ export default (props: {className?: string, user: {username: string, name: strin
                         <ul className="list">
                             {followList && props.user[followList] && Object.values(props.user[followList]).map((f: any) => {
                                 return (
-                                    <div className="flex justify-between">
+                                    <div className="flex justify-between p-2 rounded-md hover:bg-base-200">
                                         <span>{f}</span>
                                         <div>
-                                            <button onClick={() => setTimeout(() => {
+                                            <button className="btn btn-square btn-xs m-1 btn-primary" onClick={() => setTimeout(() => {
                                                 followList == 'following' 
                                                 ?   unfollow(username, f)
                                                 :   rmFollow(username, f)
                                             }, 100)
                                             }>-</button>
-                                            <button onClick={() => follow(username, f)}>+</button>
+                                            <button className="btn btn-square btn-xs m-1 btn-primary" onClick={() => setTimeout(() => {
+                                                follow(username, f)
+                                            }, 100)}>+</button>
                                         </div>
                                     </div>
                                 )
@@ -79,14 +82,14 @@ export default (props: {className?: string, user: {username: string, name: strin
                             </div>
                         </div>
                     :   <p className='p-5'>{props.user && props.user.bio}</p>}
-                <div className='absolute right-5 top-5 flex justify-between w-15'>
+                {props.username == userPage && <div className='absolute right-5 top-5 flex justify-between w-15'>
                     <div className="dropdown dropdown-end">
                         <label className='cursor-pointer' tabIndex={0}>{dots}</label>
                         <ul tabIndex={0} className="dropdown-content menu p-2 shadow rounded-box w-32 bg-base-200">
                             <li><button onClick={e => {setEdit(true); e.currentTarget.parentElement!.parentElement!.blur()}}>Edit</button></li>
                         </ul>
                     </div>
-                </div>
+                </div>}
             </div>
         </Box>
     )

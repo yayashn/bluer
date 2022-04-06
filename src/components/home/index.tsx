@@ -1,28 +1,34 @@
 import Bio from './Bio';
-import { Dispatch, SetStateAction, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Box from '../common/Box';
 import Avatar from '../common/Avatar';
 import Position from '../common/Position';
 import { createPost, deletePost, editPost } from '../../firebase/post';
 import dots from '../../assets/dots';
+import { useParams } from 'react-router-dom';
+import { onValue, ref } from 'firebase/database';
+import { db } from '../../firebase-config';
 
-export default (props: {user: any, posts: any}) => {
+export default (props: {username: string, users: any}) => {
     const [disabled, setDisabled] = useState(true);
     const [big, setBig] = useState(window.innerWidth >= 640);
     const inputRef:React.MutableRefObject<any> = useRef(null);
     const [edit, setEdit]: [number | null, Dispatch<SetStateAction<any>>] = useState(null);
     const editRefs:React.MutableRefObject<any> = useRef([]);
+    const { userPage } = useParams<string>();
+    const [posts, setPosts] = useState([]);
+    const user = props.users[userPage];
 
-    let username = '';
-    let name = '';
-    const setNames = () => {
-        if(props.user) {
-            username = props.user.username;
-            name = props.user.name !== '' ? props.user.name : username;
+    useEffect(() => {
+        const on = onValue(ref(db, `/posts/${userPage}`), snapshot => {
+            const data = snapshot.val();
+            setPosts(data);
+        });
+        return () => {
+            on();
         }
-    }
-    setNames();
+      }, [userPage])
 
     window.addEventListener('resize', () => {
         setBig(window.innerWidth >= 640);
@@ -33,15 +39,15 @@ export default (props: {user: any, posts: any}) => {
             <Container>
                 <div className='flex'>
                     <div className='flex flex-col mr-0 sm:mr-5 w-full'>
-                        {!big && <Bio user={props.user} className='mb-5'/>}
-                        <Box className='p-5 pb-2'>
+                        {!big && <Bio username={props.username} user={props.users[userPage]} className='mb-5'/>}
+                        {props.username == userPage && <Box className='p-5 pb-2 mb-5'>
                             <textarea ref={el => inputRef.current = el} onChange={(e)=>{e.currentTarget.value.trim() === '' ? setDisabled(true) : setDisabled(false)}}className="bg-transparent resize-none" placeholder="What's up?"></textarea>
                             <div className='flex justify-end w-full'>
                                 <button 
                                 onClick={()=>{
                                     try {
                                         setTimeout(() => {
-                                            createPost(props.user.username, inputRef.current.value);
+                                            createPost(props.users[userPage].username, inputRef.current.value);
                                             inputRef.current.value = '';
                                             inputRef.current.blur();
                                             setDisabled(true);
@@ -50,16 +56,16 @@ export default (props: {user: any, posts: any}) => {
                                 }}
                                 className={`btn btn-sm mt-2 w-36 ${disabled ? 'btn-disabled' : 'btn-primary'}`}>Post</button>
                             </div>
-                        </Box>
+                        </Box>}
                         <div className='flex flex-col-reverse'>
-                            {props.posts && Object.entries(props.posts).map(([k, p]: any, i: number) => {
+                            {posts && Object.entries(posts).map(([k, p]: any, i: number) => {
                                 return (
-                                    <Box key={i} className='p-5 pb-4 mt-5'>
+                                    <Box key={i} className='p-5 pb-4 mb-5'>
                                         <div className="flex mb-4">
-                                            <Avatar username={username} className='p-1 mr-2'/>
+                                            <Avatar username={userPage} className='p-1 mr-2'/>
                                             <Position className='flex-col'>
-                                                <span className='text-xl font-bold'>{name}</span>
-                                                <span className='text-sm'>@{username}</span>
+                                                <span className='text-xl font-bold'>{props.users[userPage].name !== '' ? props.users[userPage].name : userPage}</span>
+                                                <span className='text-sm'>@{userPage}</span>
                                             </Position>
                                         </div>
                                         {edit == i 
@@ -69,7 +75,7 @@ export default (props: {user: any, posts: any}) => {
                                                     <button onClick={setEdit} className='btn btn-sm btn-secondary mr-2'>Cancel</button>
                                                     <button onClick={e=>{
                                                         setTimeout(() => {
-                                                            editPost(username, editRefs.current[i].value, k);
+                                                            editPost(props.username, editRefs.current[i].value, k);
                                                             setEdit(null);
                                                         }, 100);
                                                     }} className='btn btn-sm btn-primary'>Confirm</button>
@@ -77,26 +83,26 @@ export default (props: {user: any, posts: any}) => {
                                               </div>
                                             : <p>{p}</p>
                                         }
-                                        <div className='absolute right-5 flex justify-between w-15'>
+                                        {props.username == userPage && <div className='absolute right-5 flex justify-between w-15'>
                                             <div className="dropdown dropdown-end">
                                                 <label className='cursor-pointer' tabIndex={0}>{dots}</label>
-                                                <ul tabIndex={0} className="dropdown-content menu p-2 shadow-md bg-base-200 rounded-box w-32">
+                                                <ul tabIndex={0} className="dropdown-content menu p-2 shadow- bg-base-200 rounded-box w-32">
                                                     <li><button onClick={(e)=>{setEdit(i); e.currentTarget!.parentElement!.parentElement!.blur()}}>Edit</button></li>
                                                     <li><button onClick={(e)=>{
                                                         setTimeout(() => {
-                                                            deletePost(username, k);
+                                                            deletePost(props.username, k);
                                                         }, 100);
                                                         e.currentTarget!.parentElement!.parentElement!.blur();
                                                         }}>Delete</button></li>
                                                 </ul>
                                             </div>
-                                        </div>
+                                        </div>}
                                     </Box>
                                 )
                             })}
                         </div>
                     </div>
-                    {big && <BioBig user={props.user}/>}
+                    {big && <BioBig username={props.username} user={props.users[userPage]}/>}
                 </div>
             </Container>
         </Position>

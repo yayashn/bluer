@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useParams } from "react-router-dom";
 import Home from "./components/home";
 import Login from "./components/login";
 import Navbar from "./components/navbar";
@@ -12,9 +12,8 @@ import { onValue, ref } from "firebase/database";
 export default () => {
   const [user, setUser]:any = useState(null);
   const [users, setUsers]: any = useState(null);
-  const [posts, setPosts] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     const on: any = [];
     on.push(onValue(ref(db, `/users/`), snapshot => {
@@ -29,18 +28,6 @@ export default () => {
     }
   },[])
 
-  useEffect(() => {
-    if(user) {
-      const on = onValue(ref(db, `/posts/${user.email.split('@')[0]}`), snapshot => {
-        const data = snapshot.val();
-        setPosts(data);
-      });
-      return () => {
-        on();
-      }
-    }
-  }, [user])
-
   onAuthStateChanged(auth, (currentUser) => {
     setUser(currentUser);
     setLoading(false);
@@ -50,7 +37,8 @@ export default () => {
     <BrowserRouter>
         {!loading && user?.accessToken && <Navbar user={user} setUser={setUser}/>}
         <Routes>
-          <Route path="/" element={!loading && !user?.accessToken ? <Login/> : user?.accessToken && <Home posts={posts} user={users && users[user.email.split('@')[0]]}/>}/>
+          <Route path={'/'} element={!user ? <Login/> : <Navigate to={`users/${user ? user.email.split('@')[0] : ''}`}/>}/>
+          {users && user && user.email && <Route path='users/:userPage' element={<Home username={user.email.split('@')[0]} users={users}/>}/>}
           <Route path="/profile" element={<Profile/>}/>
         </Routes>
     </BrowserRouter>
