@@ -18,7 +18,7 @@ export default (props: {username: string, users: any}) => {
     const editRefs:React.MutableRefObject<any> = useRef([]);
     const { userPage } = useParams<string>();
     const [posts, setPosts] = useState([]);
-    const user = props.users[userPage];
+    const user = props.users[userPage!];
 
     useEffect(() => {
         const on = onValue(ref(db, `/posts/${userPage}`), snapshot => {
@@ -39,7 +39,7 @@ export default (props: {username: string, users: any}) => {
             <Container>
                 <div className='flex'>
                     <div className='flex flex-col mr-0 sm:mr-5 w-full'>
-                        {!big && <Bio posts={posts} username={props.username} users={props.users} user={props.users[userPage]} className='mb-5'/>}
+                        {!big && <Bio posts={posts} username={props.username} users={props.users} user={props.users[userPage!]} className='mb-5'/>}
                         {props.username == userPage && <Box className='p-5 pb-2 mb-5'>
                             <textarea ref={el => inputRef.current = el} onChange={(e)=>{e.currentTarget.value.trim() === '' ? setDisabled(true) : setDisabled(false)}}className="bg-transparent resize-none" placeholder="What's up?"></textarea>
                             <div className='flex justify-end w-full'>
@@ -62,9 +62,9 @@ export default (props: {username: string, users: any}) => {
                                 return (
                                     <Box key={i} className='p-5 pb-4 mb-5 relative'>
                                         <div className="flex mb-4">
-                                            <Avatar username={userPage} className='p-1 mr-2'/>
+                                            <Avatar username={userPage!} className='p-1 mr-2'/>
                                             <Position className='flex-col'>
-                                                <span className='text-xl font-bold'>{props.users[userPage].name !== '' ? props.users[userPage].name : userPage}</span>
+                                                <span className='text-xl font-bold'>{props.users[userPage!].name !== '' ? props.users[userPage!].name : userPage}</span>
                                                 <span className='text-sm'>@{userPage}</span>
                                             </Position>
                                         </div>
@@ -102,7 +102,7 @@ export default (props: {username: string, users: any}) => {
                             })}
                         </div>
                     </div>
-                    {big && <BioBig posts={posts} username={props.username} users={props.users} user={props.users[userPage]}/>}
+                    {big && <BioBig posts={posts} username={props.username} users={props.users} user={props.users[userPage!]}/>}
                 </div>
             </Container>
         </Position>

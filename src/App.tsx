@@ -2,7 +2,6 @@ import { BrowserRouter, Navigate, Route, Routes, useParams } from "react-router-
 import Home from "./components/home";
 import Login from "./components/login";
 import Navbar from "./components/navbar";
-import Profile from "./components/profile";
 import './tailwind.css';
 import { auth, db } from "./firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
@@ -26,8 +25,7 @@ export default () => {
       setUser(currentUser);
       setLoading(false);
       online = setInterval(() => {
-        console.log('wow')
-        set(ref(db, `/users/${currentUser.email.split('@')[0]}/last-seen`), new Date().getTime());
+        set(ref(db, `/users/${currentUser!.email!.split('@')[0]}/last-seen`), new Date().getTime());
       }, 5000);
     })
 

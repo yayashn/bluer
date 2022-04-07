@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 
 export default (props: {users: any, user: any, setUser: any}) => {
     const [search, setSearch] = useState('');
-    const searchRef = useRef(null);
+    const searchRef:any = useRef(null);
     const nav = useNavigate();
     let limit = 5;
 
@@ -20,9 +20,9 @@ export default (props: {users: any, user: any, setUser: any}) => {
                     <div className="flex-1"><Link to='/' className="btn btn-ghost normal-case text-xl">bluer</Link></div>
                         <div className="form-control relative mx-3">
                             <input ref={el => searchRef.current = el} tabIndex={0} onChange={e => setSearch(e.currentTarget.value)} type="text" placeholder="Search for people" className={`${search !== '' && 'border-primary'} input input-sm h-full focus:outline-none focus:border-primary input-bordered`}/>
-                            <Search>{searchIcon}</Search>
+                            <Search/>
                             {search !== '' && <ul tabIndex={0} className="absolute top-10 w-full h-auto bg-base-300 rounded-md">
-                                {Object.values(props.users).map(u=>{
+                                {Object.values(props.users).map((u:any)=>{
                                     if(limit > 0 && u.username.includes(search)) {
                                         limit--;
                                         return (
@@ -64,8 +64,4 @@ const Search = styled(motion.button).attrs({
         justify-center
         cursor-pointer
     `
-})`
-    & > svg {
-        height: 15px;
-    }
-`
+})``

@@ -1,4 +1,3 @@
-import dots from "../../assets/dots";
 import { useRef, useState } from "react";
 import { editInfo, follow, rmFollow, unfollow } from "../../firebase/profile";
 import { useParams } from "react-router-dom";
@@ -10,8 +9,8 @@ import styled from "styled-components";
 export default (props: {className?: string, posts: any, username: string, users: any, user: {username: string, name: string, bio: string, following: any, followers: any}}) => {
     const [edit, setEdit] = useState(false);
     const { userPage } = useParams();
-    const nameRef = useRef();
-    const bioRef = useRef();
+    const nameRef:any = useRef();
+    const bioRef:any = useRef();
     const followers = props.users[userPage!].followers && Object.keys(props.users[userPage!].followers).length || 0;
     const following = props.users[userPage!].following && Object.keys(props.users[userPage!].following).length || 0;
     const postCount = props.posts ? Object.keys(props.posts).length : 0;
@@ -21,7 +20,7 @@ export default (props: {className?: string, posts: any, username: string, users:
             <div className="relative flex flex-col h-auto rounded-box bg-transparent md:max-w-xs mb-5 md:mb-0 w-full">
                 <div className="bg-base-100 rounded-box shadow-md">
                     <div className="flex justify-center my-5">
-                        <div className={`avatar ${(props.username == userPage || props.users[userPage]['last-seen'] > new Date().getTime() - 10000) && 'online'}`}>
+                        <div className={`avatar ${(props.username == userPage || props.users[userPage!]['last-seen'] > new Date().getTime() - 10000) && 'online'}`}>
                             <div className="mask mask-squircle bg-base-content w-20 aspect-square bg-opacity-10 p-px"><img src="" className="mask mask-squircle" /></div>
                         </div>
                     </div>
