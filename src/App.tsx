@@ -13,32 +13,31 @@ export default () => {
   const [user, setUser]:any = useState(null);
   const [users, setUsers]: any = useState(null);
   const [loading, setLoading] = useState(true);
-  const { userPage } = useParams();
 
   useEffect(() => {
     const on: any = [];
+    let online: any;
     on.push(onValue(ref(db, `/users/`), snapshot => {
         const data = snapshot.val();
         setUsers(data);
     }));
 
+    onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+      online = setInterval(() => {
+        console.log('wow')
+        set(ref(db, `/users/${currentUser.email.split('@')[0]}/last-seen`), new Date().getTime());
+      }, 5000);
+    })
+
     return () => {
+        if(online) clearInterval(online);
         on.map((v: any) => {
           v();
         })
     }
   },[])
-
-  setInterval(() => {
-      if(user) {
-        set(ref(db, `/users/${user.email.split('@')[0]}/last-seen`), new Date().getTime());
-      }
-  }, 5000);
-
-  onAuthStateChanged(auth, (currentUser) => {
-    setUser(currentUser);
-    setLoading(false);
-  })
 
   return (
     <BrowserRouter>
