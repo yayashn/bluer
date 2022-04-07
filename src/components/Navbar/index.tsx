@@ -23,7 +23,7 @@ export default (props: {users: any, user: any, setUser: any}) => {
                             <Search/>
                             {search !== '' && <ul tabIndex={0} className="absolute top-10 w-full h-auto bg-base-300 rounded-md">
                                 {Object.values(props.users).map((u:any)=>{
-                                    if(limit > 0 && u.username.includes(search)) {
+                                    if(u.username && limit > 0 && u.username.includes(search)) {
                                         limit--;
                                         return (
                                             <li

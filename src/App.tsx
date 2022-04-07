@@ -25,7 +25,9 @@ export default () => {
       setUser(currentUser);
       setLoading(false);
       online = setInterval(() => {
-        set(ref(db, `/users/${currentUser!.email!.split('@')[0]}/last-seen`), new Date().getTime());
+        if(currentUser){
+          set(ref(db, `/users/${currentUser!.email!.split('@')[0]}/last-seen`), new Date().getTime());
+        }
       }, 5000);
     })
 

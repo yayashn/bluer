@@ -5,30 +5,50 @@ import FollowButton from "./FollowButton";
 import { set, ref } from "firebase/database";
 import { db } from "../../firebase-config";
 import styled from "styled-components";
+import upload from "../../assets/upload";
 
 export default (props: {className?: string, posts: any, username: string, users: any, user: {username: string, name: string, bio: string, following: any, followers: any}}) => {
     const [edit, setEdit] = useState(false);
     const { userPage } = useParams();
     const nameRef:any = useRef();
     const bioRef:any = useRef();
-    const followers = props.users[userPage!].followers && Object.keys(props.users[userPage!].followers).length || 0;
-    const following = props.users[userPage!].following && Object.keys(props.users[userPage!].following).length || 0;
+    const user = props.users[userPage!];
+    if(!user) {return}
+    const followers = user.followers && Object.keys(user.followers).length || 0;
+    const following = user.following && Object.keys(user.following).length || 0;
     const postCount = props.posts ? Object.keys(props.posts).length : 0;
+    const [image, setImage] = useState(null);
+
 
     return (
         <>
             <div className="relative flex flex-col h-auto rounded-box bg-transparent md:max-w-xs mb-5 md:mb-0 w-full">
                 <div className="bg-base-100 rounded-box shadow-md">
                     <div className="flex justify-center my-5">
-                        <div className={`avatar ${(props.username == userPage || props.users[userPage!]['last-seen'] > new Date().getTime() - 10000) && 'online'}`}>
+                        <div className={`avatar relative ${(props.username == userPage || user['last-seen'] > new Date().getTime() - 10000) && 'online'}`}>
                             <div className="mask mask-squircle bg-base-content w-20 aspect-square bg-opacity-10 p-px"><img src="" className="mask mask-squircle" /></div>
+                            {edit && 
+                            <label className="absolute w-full h-full flex justify-center items-center cursor-pointer">
+                                {upload}
+                                <input
+                                        type="file"
+                                        onChange={(e: any)=>{
+                                            if(e.target.files[0]) {
+
+                                            }
+                                        }}
+                                        className="hidden"/>
+                            </label>
+                            }
                         </div>
                     </div>
                     {!edit ? 
                         <>
-                            <div className="text-lg text-center font-extrabold h-7 capitalize">{props.users[userPage!].name !== '' ? props.users[userPage!].name : props.users[userPage!].username}</div>
+                            <div className="text-lg text-center font-extrabold h-7 capitalize relative">
+                                {user.name !== '' ? user.name : user.username}
+                            </div>
                             <div className="text-xs text-center">@{userPage}</div>
-                            <div className="text-sm text-center my-3">{props.users[userPage!].bio}</div>   
+                            <div className="text-sm text-center my-3">{user.bio}</div>   
                             <div className="flex w-full justify-center">
                                 <div className="flex justify-between w-3/4 text-xs">
                                     <Stats>{postCount} Post{postCount != 1 && 's'}</Stats>
@@ -38,22 +58,22 @@ export default (props: {className?: string, posts: any, username: string, users:
                             </div>
                             {props.username !== userPage
                             ? <FollowButton onClick={()=>setTimeout(() => {
-                                if(props.users[userPage!].followers){
+                                if(user.followers){
                                     unfollow(props.username, userPage!)
                                 } else {
                                     follow(props.username, userPage!);
                                 }
-                            }, 100)}>{props.users[userPage!].followers && props.users[userPage!].followers[props.username] ? 'Unfollow' : 'Follow'}</FollowButton>
+                            }, 100)}>{user.followers && user.followers[props.username] ? 'Unfollow' : 'Follow'}</FollowButton>
                             : <FollowButton onClick={()=>setEdit(true)}>Edit Profile</FollowButton>}
                         </>
                         :
                         <div className="flex flex-col justify-center items-center">
-                            <input ref={el => nameRef.current = el} className="text-lg text-center font-extrabold h-7 capitalize bg-transparent w-24 bg-primary rounded-sm text-black" defaultValue={props.users[userPage!].name !== '' ? props.users[userPage!].name : props.users[userPage!].username}/>
+                            <input ref={el => nameRef.current = el} className="text-lg text-center font-extrabold h-7 capitalize bg-transparent w-28 bg-primary rounded-sm text-black" defaultValue={user.name !== '' ? user.name : user.username}/>
                             <div className="text-xs text-center">@{userPage}</div>
-                            <textarea ref={el => bioRef.current = el} className="text-sm text-center my-3 bg-primary text-black resize-none rounded-sm" defaultValue={props.users[userPage!].bio}></textarea>  
+                            <textarea ref={el => bioRef.current = el} className="text-sm text-center my-3 bg-primary text-black resize-none rounded-sm" defaultValue={user.bio}></textarea>  
                             <div className="flex w-full justify-center">
                                 <div className="flex justify-between w-3/4 text-xs">
-                                <Stats>{postCount} Post{postCount != 1 && 's'}</Stats>
+                                    <Stats>{postCount} Post{postCount != 1 && 's'}</Stats>
                                     <Stats>{followers} Follower{followers != 1 && 's'}</Stats>
                                     <Stats>{following} Following</Stats>
                                 </div>  
