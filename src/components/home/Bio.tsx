@@ -33,7 +33,7 @@ export default (props: {className?: string, posts: any, username: string, users:
                             <div className="flex w-full justify-center">
                                 <div className="flex justify-between w-3/4 text-xs">
                                     <Stats>{postCount} Post{postCount != 1 && 's'}</Stats>
-                                    <Stats>{followers} Followers</Stats>
+                                    <Stats>{followers} Follower{followers != 1 && 's'}</Stats>
                                     <Stats>{following} Following</Stats>
                                 </div>  
                             </div>
@@ -54,8 +54,8 @@ export default (props: {className?: string, posts: any, username: string, users:
                             <textarea ref={el => bioRef.current = el} className="text-sm text-center my-3 bg-primary text-black resize-none rounded-sm" defaultValue={props.users[userPage!].bio}></textarea>  
                             <div className="flex w-full justify-center">
                                 <div className="flex justify-between w-3/4 text-xs">
-                                    <Stats>{postCount} Post{postCount != 1 && 's'}</Stats>
-                                    <Stats>{followers} Followers</Stats>
+                                <Stats>{postCount} Post{postCount != 1 && 's'}</Stats>
+                                    <Stats>{followers} Follower{followers != 1 && 's'}</Stats>
                                     <Stats>{following} Following</Stats>
                                 </div>  
                             </div> 

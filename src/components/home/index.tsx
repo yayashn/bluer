@@ -60,7 +60,7 @@ export default (props: {username: string, users: any}) => {
                         <div className='flex flex-col-reverse'>
                             {posts && Object.entries(posts).map(([k, p]: any, i: number) => {
                                 return (
-                                    <Box key={i} className='p-5 pb-4 mb-5'>
+                                    <Box key={i} className='p-5 pb-4 mb-5 relative'>
                                         <div className="flex mb-4">
                                             <Avatar username={userPage} className='p-1 mr-2'/>
                                             <Position className='flex-col'>

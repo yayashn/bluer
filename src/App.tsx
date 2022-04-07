@@ -8,11 +8,13 @@ import { auth, db } from "./firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { onValue, ref } from "firebase/database";
+import Users from "./components/users";
 
 export default () => {
   const [user, setUser]:any = useState(null);
   const [users, setUsers]: any = useState(null);
   const [loading, setLoading] = useState(true);
+  const { userPage } = useParams();
 
   useEffect(() => {
     const on: any = [];
@@ -35,11 +37,12 @@ export default () => {
 
   return (
     <BrowserRouter>
-        {!loading && user?.accessToken && <Navbar user={user} setUser={setUser}/>}
+        {!loading && 
+        user?.accessToken &&
+        <Navbar users={users} user={user} setUser={setUser}/>}
         <Routes>
           <Route path={'/'} element={!user ? <Login/> : <Navigate to={`users/${user ? user.email.split('@')[0] : ''}`}/>}/>
           {users && user && user.email && <Route path='users/:userPage' element={<Home username={user.email.split('@')[0]} users={users}/>}/>}
-          <Route path="/profile" element={<Profile/>}/>
         </Routes>
     </BrowserRouter>
   )
