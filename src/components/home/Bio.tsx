@@ -49,7 +49,7 @@ export default (props: {className?: string, posts: any, username: string, users:
                         </>
                         :
                         <div className="flex flex-col justify-center items-center">
-                            <input ref={el => nameRef.current = el} className="text-lg text-center font-extrabold h-7 capitalize bg-transparent w-24 bg-primary rounded-sm text-black" defaultValue={props.users[userPage!].name}/>
+                            <input ref={el => nameRef.current = el} className="text-lg text-center font-extrabold h-7 capitalize bg-transparent w-24 bg-primary rounded-sm text-black" defaultValue={props.users[userPage!].name !== '' ? props.users[userPage!].name : props.users[userPage!].username}/>
                             <div className="text-xs text-center">@{userPage}</div>
                             <textarea ref={el => bioRef.current = el} className="text-sm text-center my-3 bg-primary text-black resize-none rounded-sm" defaultValue={props.users[userPage!].bio}></textarea>  
                             <div className="flex w-full justify-center">
