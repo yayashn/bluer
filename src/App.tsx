@@ -7,8 +7,7 @@ import './tailwind.css';
 import { auth, db } from "./firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { onValue, ref } from "firebase/database";
-import Users from "./components/users";
+import { onValue, ref, set } from "firebase/database";
 
 export default () => {
   const [user, setUser]:any = useState(null);
@@ -23,12 +22,22 @@ export default () => {
         setUsers(data);
     }));
 
+    if(user) {
+      set(ref(db, `/users/${user.email.split('@')[0]}/last-seen`), new Date().getTime());
+    }
+
     return () => {
         on.map((v: any) => {
           v();
         })
     }
   },[])
+
+  setInterval(() => {
+      if(user) {
+        set(ref(db, `/users/${user.email.split('@')[0]}/last-seen`), new Date().getTime());
+      }
+  }, 5000);
 
   onAuthStateChanged(auth, (currentUser) => {
     setUser(currentUser);
