@@ -22,10 +22,6 @@ export default () => {
         setUsers(data);
     }));
 
-    if(user) {
-      set(ref(db, `/users/${user.email.split('@')[0]}/last-seen`), new Date().getTime());
-    }
-
     return () => {
         on.map((v: any) => {
           v();
