@@ -13,7 +13,7 @@ export default (props: {className?: string, posts: any, username: string, users:
     const nameRef:any = useRef();
     const bioRef:any = useRef();
     const user = props.users[userPage!];
-    if(!user) {return}
+    if(!user) {return <></>}
     const followers = user.followers && Object.keys(user.followers).length || 0;
     const following = user.following && Object.keys(user.following).length || 0;
     const postCount = props.posts ? Object.keys(props.posts).length : 0;
