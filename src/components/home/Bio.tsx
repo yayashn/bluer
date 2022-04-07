@@ -1,96 +1,83 @@
-import Avatar from "../common/Avatar";
-import HollowButton from "../common/HollowButton";
-import Box from "../common/Box";
-import ButtonContainer from "./ButtonContainer";
 import dots from "../../assets/dots";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { editInfo, follow, rmFollow, unfollow } from "../../firebase/profile";
 import { useParams } from "react-router-dom";
+import FollowButton from "./FollowButton";
+import { set, ref } from "firebase/database";
+import { db } from "../../firebase-config";
+import styled from "styled-components";
 
-export default (props: {className?: string, username: string, user: {username: string, name: string, bio: string, following: any, followers: any}}) => {
+export default (props: {className?: string, posts: any, username: string, users: any, user: {username: string, name: string, bio: string, following: any, followers: any}}) => {
     const [edit, setEdit] = useState(false);
-    const bioRef:any = useRef(null);
-    const nameRef:any = useRef(null);
-    const [username, setUsername] = useState('');
-    const [name, setName] = useState('');
-    const [followList, setFollowList]:['following' | 'followers' | null, any] = useState(null);
     const { userPage } = useParams();
+    const nameRef = useRef();
+    const bioRef = useRef();
+    const followers = props.users[userPage!].followers && Object.keys(props.users[userPage!].followers).length || 0;
+    const following = props.users[userPage!].following && Object.keys(props.users[userPage!].following).length || 0;
+
     
-   useEffect(() => {
-     try {
-        setUsername(props.user.username);
-        setName(props.user.name !== '' ? props.user.name : props.user.username);
-     } catch{}
-   }, [props.user, edit])
-   
     return (
-        <Box className={props.className + ' bg-transparent shadow-none'}>
-            <div className="bg-base-100 rounded-box shadow-md">
-                <div className="flex p-5 pb-1">
-                    <div className='flex items-start -mt-5'>
-                        <Avatar username={username} className='p-5'/>
+        <>
+            <div className="relative flex flex-col h-auto rounded-box bg-transparent md:max-w-xs mb-5 md:mb-0 w-full">
+                <div className="bg-base-100 rounded-box shadow-md">
+                    <div className="flex justify-center my-5">
+                        <div className="online avatar">
+                            <div className="mask mask-squircle bg-base-content w-20 aspect-square bg-opacity-10 p-px"><img src="" className="mask mask-squircle" /></div>
+                        </div>
                     </div>
-                    <div className='flex flex-col'>
-                        {edit
-                        ? <input className="bg-primary rounded-sm text-black text-xl font-bold w-28" ref={el => nameRef.current = el} defaultValue={name}/>
-                        : <span className='text-xl font-bold'>{name}</span>}
-                        <span className='text-sm'>@{username}</span>
-                    </div>
-                </div>
-                <ButtonContainer>
-                    <HollowButton onClick={()=>setFollowList('followers')} disabled={true}><span className='font-bold'>0</span> <span className="whitespace-pre"> Followers</span></HollowButton>
-                    <HollowButton onClick={()=>setFollowList('following')} disabled={true}><span className='font-bold'>0</span> <span className="whitespace-pre"> Following</span></HollowButton>
-                </ButtonContainer>
-                {followList &&
-                <div className="fixed w-full h-full top-0 left-0 flex justify-center items-center z-40">
-                    <div className="absolute w-full h-full bg-black opacity-50 z-10"></div>
-                    <div className="bg-base-100 z-20 p-5 rounded-box h-96 w-72">
-                        <h1 className="text-2xl capitalize text-center font-bold">{followList}</h1>
-                        <ul className="list">
-                            {followList && props.user[followList] && Object.values(props.user[followList]).map((f: any) => {
-                                return (
-                                    <div className="flex justify-between p-2 rounded-md hover:bg-base-200">
-                                        <span>{f}</span>
-                                        <div>
-                                            <button className="btn btn-square btn-xs m-1 btn-primary" onClick={() => setTimeout(() => {
-                                                followList == 'following' 
-                                                ?   unfollow(username, f)
-                                                :   rmFollow(username, f)
-                                            }, 100)
-                                            }>-</button>
-                                            <button className="btn btn-square btn-xs m-1 btn-primary" onClick={() => setTimeout(() => {
-                                                follow(username, f)
-                                            }, 100)}>+</button>
-                                        </div>
-                                    </div>
-                                )
-                            })}
-                        </ul>
-                    </div>
-                </div>}
-                {edit 
-                    ?   <div className="flex flex-col p-5">
-                            <textarea ref={el => bioRef.current = el} className="bg-primary text-black rounded-sm resize-none" defaultValue={props.user && props.user.bio}></textarea>
-                            <div className="flex mt-3">
-                                <button onClick={()=>setEdit(false)} className='btn btn-sm btn-secondary mr-2'>Cancel</button>
-                                <button onClick={e=>{
+                    {!edit ? 
+                        <>
+                            <div className="text-lg text-center font-extrabold h-7 capitalize">{props.users[userPage!].name !== '' ? props.users[userPage!].name : props.users[userPage!].username}</div>
+                            <div className="text-xs text-center">@{userPage}</div>
+                            <div className="text-sm text-center my-3">{props.users[userPage!].bio}</div>   
+                            <div className="flex w-full justify-center">
+                                <div className="flex justify-between w-3/4 text-xs">
+                                    <Stats>{Object.keys(props.posts).length} Post{Object.keys(props.posts).length != 1 && 's'}</Stats>
+                                    <Stats>{followers} Followers</Stats>
+                                    <Stats>{following} Following</Stats>
+                                </div>  
+                            </div>
+                            {props.username !== userPage
+                            ? <FollowButton onClick={()=>setTimeout(() => {
+                                if(props.users[userPage!].followers){
+                                    unfollow(props.username, userPage!)
+                                } else {
+                                    follow(props.username, userPage!);
+                                }
+                            }, 100)}>{props.users[userPage!].followers && props.users[userPage!].followers[props.username] ? 'Unfollow' : 'Follow'}</FollowButton>
+                            : <FollowButton onClick={()=>setEdit(true)}>Edit Profile</FollowButton>}
+                        </>
+                        :
+                        <div className="flex flex-col justify-center items-center">
+                            <input ref={el => nameRef.current = el} className="text-lg text-center font-extrabold h-7 capitalize bg-transparent w-24 bg-primary rounded-sm text-black" defaultValue={props.users[userPage!].name}/>
+                            <div className="text-xs text-center">@{userPage}</div>
+                            <textarea ref={el => bioRef.current = el} className="text-sm text-center my-3 bg-primary text-black resize-none rounded-sm" defaultValue={props.users[userPage!].bio}></textarea>  
+                            <div className="flex w-full justify-center">
+                                <div className="flex justify-between w-3/4 text-xs">
+                                    <Stats>{Object.keys(props.posts).length} Post{Object.keys(props.posts).length != 1 && 's'}</Stats>
+                                    <Stats>{followers} Followers</Stats>
+                                    <Stats>{following} Following</Stats>
+                                </div>  
+                            </div> 
+                            <div className="flex my-5 justify-between w-48">
+                                <button onClick={()=>setEdit(false)} className="btn btn-primary btn-sm">Cancel</button>
+                                <button onClick={()=>{
                                     setTimeout(() => {
-                                        editInfo(username, {name: nameRef.current.value, bio: bioRef.current.value});
+                                        set(ref(db, `users/${props.username}/name`), nameRef.current!.value);
+                                        set(ref(db, `users/${props.username}/bio`), bioRef.current!.value);
                                         setEdit(false);
                                     }, 100);
-                                }} className='btn btn-sm btn-primary'>Confirm</button>
-                            </div>
+                                }} className="btn btn-accent btn-sm">Confirm</button>    
+                            </div>  
                         </div>
-                    :   <p className='p-5'>{props.user && props.user.bio}</p>}
-                {props.username == userPage && <div className='absolute right-5 top-5 flex justify-between w-15'>
-                    <div className="dropdown dropdown-end">
-                        <label className='cursor-pointer' tabIndex={0}>{dots}</label>
-                        <ul tabIndex={0} className="dropdown-content menu p-2 shadow rounded-box w-32 bg-base-200">
-                            <li><button onClick={e => {setEdit(true); e.currentTarget.parentElement!.parentElement!.blur()}}>Edit</button></li>
-                        </ul>
-                    </div>
-                </div>}
+                    }
+                </div>
             </div>
-        </Box>
+        </>
     )
 }
+
+const Stats = styled.span`
+    width: 80px;
+    text-align: center;
+`

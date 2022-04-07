@@ -25,7 +25,7 @@ export default () => {
                     <button onClick={async () => {
                         const response = await register(user, pass);
                         setAlert([response.success, response.message]);
-                    }} className="btn btn-secondary w-4/12">Sign Up</button>
+                    }} className="btn btn-accent w-4/12">Sign Up</button>
                     <div className="mx-2"></div>
                     <button onClick={async() => {
                         const response = await login(user, pass);

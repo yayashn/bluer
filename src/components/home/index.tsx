@@ -39,7 +39,7 @@ export default (props: {username: string, users: any}) => {
             <Container>
                 <div className='flex'>
                     <div className='flex flex-col mr-0 sm:mr-5 w-full'>
-                        {!big && <Bio username={props.username} user={props.users[userPage]} className='mb-5'/>}
+                        {!big && <Bio posts={posts} username={props.username} users={props.users} user={props.users[userPage]} className='mb-5'/>}
                         {props.username == userPage && <Box className='p-5 pb-2 mb-5'>
                             <textarea ref={el => inputRef.current = el} onChange={(e)=>{e.currentTarget.value.trim() === '' ? setDisabled(true) : setDisabled(false)}}className="bg-transparent resize-none" placeholder="What's up?"></textarea>
                             <div className='flex justify-end w-full'>
@@ -72,13 +72,13 @@ export default (props: {username: string, users: any}) => {
                                             ? <div className='flex flex-col'>
                                                 <textarea ref={el => editRefs.current[i] = el} className='bg-primary rounded-sm text-black placeholder-black resize-none' defaultValue={p} placeholder={p}></textarea>
                                                 <div className='flex w-full justify-end mt-3'>
-                                                    <button onClick={setEdit} className='btn btn-sm btn-secondary mr-2'>Cancel</button>
+                                                    <button onClick={setEdit} className='btn btn-sm btn-primary mr-2'>Cancel</button>
                                                     <button onClick={e=>{
                                                         setTimeout(() => {
                                                             editPost(props.username, editRefs.current[i].value, k);
                                                             setEdit(null);
                                                         }, 100);
-                                                    }} className='btn btn-sm btn-primary'>Confirm</button>
+                                                    }} className='btn btn-sm btn-accent'>Confirm</button>
                                                 </div>
                                               </div>
                                             : <p>{p}</p>
@@ -102,7 +102,7 @@ export default (props: {username: string, users: any}) => {
                             })}
                         </div>
                     </div>
-                    {big && <BioBig username={props.username} user={props.users[userPage]}/>}
+                    {big && <BioBig posts={posts} username={props.username} users={props.users} user={props.users[userPage]}/>}
                 </div>
             </Container>
         </Position>

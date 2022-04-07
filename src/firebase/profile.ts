@@ -8,7 +8,7 @@ export const editInfo = (username: string, info: {name: string, bio: string}) =>
 
 export const follow = (username: string, user: string) => {
     set(ref(db, `users/${username}/following/${user}`), user);
-    set(ref(db, `users/${user}/followers/${username}`), user);
+    set(ref(db, `users/${user}/followers/${username}`), username);
 }
 
 export const unfollow = (username: string, user: string) => {
