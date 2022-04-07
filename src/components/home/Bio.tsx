@@ -14,7 +14,7 @@ export default (props: {className?: string, posts: any, username: string, users:
     const bioRef = useRef();
     const followers = props.users[userPage!].followers && Object.keys(props.users[userPage!].followers).length || 0;
     const following = props.users[userPage!].following && Object.keys(props.users[userPage!].following).length || 0;
-
+    const postCount = props.posts ? Object.keys(props.posts).length : 0;
     
     return (
         <>
@@ -32,7 +32,7 @@ export default (props: {className?: string, posts: any, username: string, users:
                             <div className="text-sm text-center my-3">{props.users[userPage!].bio}</div>   
                             <div className="flex w-full justify-center">
                                 <div className="flex justify-between w-3/4 text-xs">
-                                    <Stats>{Object.keys(props.posts).length} Post{Object.keys(props.posts).length != 1 && 's'}</Stats>
+                                    <Stats>{postCount} Post{postCount != 1 && 's'}</Stats>
                                     <Stats>{followers} Followers</Stats>
                                     <Stats>{following} Following</Stats>
                                 </div>  
@@ -54,7 +54,7 @@ export default (props: {className?: string, posts: any, username: string, users:
                             <textarea ref={el => bioRef.current = el} className="text-sm text-center my-3 bg-primary text-black resize-none rounded-sm" defaultValue={props.users[userPage!].bio}></textarea>  
                             <div className="flex w-full justify-center">
                                 <div className="flex justify-between w-3/4 text-xs">
-                                    <Stats>{Object.keys(props.posts).length} Post{Object.keys(props.posts).length != 1 && 's'}</Stats>
+                                    <Stats>{postCount} Post{postCount != 1 && 's'}</Stats>
                                     <Stats>{followers} Followers</Stats>
                                     <Stats>{following} Following</Stats>
                                 </div>  
