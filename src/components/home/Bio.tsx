@@ -3,8 +3,7 @@ import { editInfo, follow, rmFollow, unfollow } from "../../firebase/profile";
 import { useParams } from "react-router-dom";
 import FollowButton from "./FollowButton";
 import { set, ref } from "firebase/database";
-import {ref as storageRef, uploadBytes, getDownloadURL} from "firebase/storage";
-import { db, storage } from "../../firebase-config";
+import { db } from "../../firebase-config";
 import styled from "styled-components";
 import upload from "../../assets/upload";
 
@@ -19,7 +18,7 @@ export default (props: {className?: string, posts: any, username: string, users:
     const following = user.following && Object.keys(user.following).length || 0;
     const postCount = props.posts ? Object.keys(props.posts).length : 0;
     const [image, setImage] = useState(null);
-    const [pic, setPic]:[string | null, any] = useState(null);
+
 
     return (
         <>
@@ -27,18 +26,18 @@ export default (props: {className?: string, posts: any, username: string, users:
                 <div className="bg-base-100 rounded-box shadow-md">
                     <div className="flex justify-center my-5">
                         <div className={`avatar relative ${(props.username == userPage || user['last-seen'] > new Date().getTime() - 10000) && 'online'}`}>
-                            <div className="mask mask-squircle bg-base-content w-20 aspect-square bg-opacity-10 p-px"><img src={pic || ''} className="mask mask-squircle" /></div>
+                            <div className="mask mask-squircle bg-base-content w-20 aspect-square bg-opacity-10 p-px"><img src="" className="mask mask-squircle" /></div>
                             {edit && 
                             <label className="absolute w-full h-full flex justify-center items-center cursor-pointer">
                                 {upload}
                                 <input
-                                    type="file"
-                                    onChange={(e: any)=>{
-                                        if(e.target.files[0]) {
-                                            setImage(e.target.files[0]);
-                                        }
-                                    }}
-                                    className="hidden"/>
+                                        type="file"
+                                        onChange={(e: any)=>{
+                                            if(e.target.files[0]) {
+
+                                            }
+                                        }}
+                                        className="hidden"/>
                             </label>
                             }
                         </div>
@@ -58,8 +57,8 @@ export default (props: {className?: string, posts: any, username: string, users:
                                 </div>  
                             </div>
                             {props.username !== userPage
-                            ? <FollowButton extra onClick={()=>setTimeout(() => {
-                                if(user.followers && user.followers[props.username]){
+                            ? <FollowButton onClick={()=>setTimeout(() => {
+                                if(user.followers){
                                     unfollow(props.username, userPage!)
                                 } else {
                                     follow(props.username, userPage!);
@@ -85,16 +84,6 @@ export default (props: {className?: string, posts: any, username: string, users:
                                     setTimeout(() => {
                                         set(ref(db, `users/${props.username}/name`), nameRef.current!.value);
                                         set(ref(db, `users/${props.username}/bio`), bioRef.current!.value);
-                                        if(image) {
-                                            const imageRef = storageRef(storage, `images/${props.user.username}`)
-                                            uploadBytes(imageRef, image).then((snapshot) => {
-                                                setImage(null);
-                                                getDownloadURL(imageRef).then((url: string) => {
-                                                    console.log(url);
-                                                    setPic(url);
-                                                })
-                                            });
-                                        }
                                         setEdit(false);
                                     }, 100);
                                 }} className="btn btn-accent btn-sm">Confirm</button>    

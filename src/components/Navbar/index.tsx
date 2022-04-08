@@ -19,11 +19,7 @@ export default (props: {users: any, user: any, setUser: any}) => {
                 <div className="navbar w-11/12 bg-base-100 shadow-xl rounded-box">
                     <div className="flex-1"><Link to='/' className="btn btn-ghost normal-case text-xl">bluer</Link></div>
                         <div className="form-control relative mx-3">
-                            <input 
-                            onBlur={()=>{setTimeout(() => {
-                                setSearch('')
-                            }, 100);}}
-                            ref={el => searchRef.current = el} tabIndex={0} onChange={e => setSearch(e.currentTarget.value)} type="text" placeholder="Search for people" className={`${search !== '' && 'border-primary'} input input-sm h-full focus:outline-none focus:border-primary input-bordered`}/>
+                            <input ref={el => searchRef.current = el} tabIndex={0} onChange={e => setSearch(e.currentTarget.value)} type="text" placeholder="Search for people" className={`${search !== '' && 'border-primary'} input input-sm h-full focus:outline-none focus:border-primary input-bordered`}/>
                             <Search/>
                             {search !== '' && <ul tabIndex={0} className="absolute top-10 w-full h-auto bg-base-300 rounded-md">
                                 {Object.values(props.users).map((u:any)=>{
@@ -31,8 +27,13 @@ export default (props: {users: any, user: any, setUser: any}) => {
                                         limit--;
                                         return (
                                             <li
+<<<<<<< HEAD
                                                 onMouseDown={()=>{nav(`users/${u.username}`); setSearch(''); searchRef.current.value = ''}}
                                                 className="capitalize text-sm px-2 p-1 w-full hover:text-primary hover:underline cursor-pointer">{u.username}</li>
+=======
+                                                onClick={()=>{nav(`users/${u.username.toLowerCase()}`); setSearch(''); searchRef.current.value = ''}}
+                                                className="capitalize text-sm px-2 p-1 w-full hover:bg-slate-500 cursor-pointer">{u.username}</li>
+>>>>>>> parent of 9f184d7 (Added chat)
                                         )
                                     }
                                 })}
