@@ -27,18 +27,8 @@ export default (props: {users: any, user: any, setUser: any}) => {
                                         limit--;
                                         return (
                                             <li
-<<<<<<< HEAD
-<<<<<<< HEAD
                                                 onMouseDown={()=>{nav(`users/${u.username}`); setSearch(''); searchRef.current.value = ''}}
                                                 className="capitalize text-sm px-2 p-1 w-full hover:text-primary hover:underline cursor-pointer">{u.username}</li>
-=======
-                                                onClick={()=>{nav(`users/${u.username.toLowerCase()}`); setSearch(''); searchRef.current.value = ''}}
-                                                className="capitalize text-sm px-2 p-1 w-full hover:bg-slate-500 cursor-pointer">{u.username}</li>
->>>>>>> parent of 9f184d7 (Added chat)
-=======
-                                                onClick={()=>{nav(`users/${u.username.toLowerCase()}`); setSearch(''); searchRef.current.value = ''}}
-                                                className="capitalize text-sm px-2 p-1 w-full hover:bg-slate-500 cursor-pointer">{u.username}</li>
->>>>>>> parent of 9f184d7 (Added chat)
                                         )
                                     }
                                 })}
