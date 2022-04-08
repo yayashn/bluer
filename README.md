@@ -11,6 +11,7 @@ https://bluer-2b0a2.web.app/
 - Authentication,
 - Following, 
  - User search, 
- - Profile customisation etc.
+ - Profile customisation
+ - Online status etc.
 
 ![](demo.gif)
