@@ -25,21 +25,6 @@ export default (props: {username: any, users: any}) => {
         }
     }, [request])
 
-    useEffect(() => {
-        if(!props.users) return;
-        if(!props.users[props.username]) return;
-        if(!props.users[props.username].chats) return;
-        if(!props.users[props.username].chats[recipent]) return;
-
-        const dict = props.users[props.username].chats[recipent];
-        const sortedList: any = [];
-
-        Object.entries(dict).map(([k,v]) => {
-            
-        })
-        
-    }, [props.users])
-    
     return (
         <div className="fixed right-3 bottom-3 z-50">
             {toggle && <div className="bg-base-100 w-60 h-auto p-3 rounded-md drop-shadow-md">
@@ -77,7 +62,7 @@ export default (props: {username: any, users: any}) => {
                                     props.users[props.username].chats && props.users[props.username].chats[recipent] &&
                                     [...Object.entries(props.users[props.username].chats[recipent])]
                                     .sort((a: any, z: any) => {
-                                        return Number(z[0].replace(/\D/g,''))-Number(a[0].replace(/\D/g,''))})
+                                        return Number(z[0].split(':')[1])-Number(a[0].split(':')[1])})
                                     .map(([u,m]: any) => {
                                         return (
                                             <Bubble key={u} sender={u.startsWith(props.username+':')}>
