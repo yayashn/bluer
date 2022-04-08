@@ -31,7 +31,7 @@ export default (props: {users: any, user: any, setUser: any}) => {
                                         limit--;
                                         return (
                                             <li
-                                                onMouseDown={()=>{nav(`users/${u.username.toLowerCase()}`); setSearch(''); searchRef.current.value = ''}}
+                                                onMouseDown={()=>{nav(`users/${u.username}`); setSearch(''); searchRef.current.value = ''}}
                                                 className="capitalize text-sm px-2 p-1 w-full hover:text-primary hover:underline cursor-pointer">{u.username}</li>
                                         )
                                     }

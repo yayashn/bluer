@@ -3,7 +3,7 @@ import { auth } from "../firebase-config";
 
 export default async (username: string, password: string) => {
     try {
-        const user = await signInWithEmailAndPassword(auth, username, password);
+        const user = await signInWithEmailAndPassword(auth, username.toLowerCase(), password);
         return {
             success: 'alert-success',
             message: 'Logging in.',

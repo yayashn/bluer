@@ -18,7 +18,6 @@ export default (props: {username: string, users: any}) => {
     const editRefs:React.MutableRefObject<any> = useRef([]);
     const { userPage } = useParams<string>();
     const [posts, setPosts] = useState([]);
-    const user = props.users[userPage!];
 
     useEffect(() => {
         const on = onValue(ref(db, `/posts/${userPage}`), snapshot => {

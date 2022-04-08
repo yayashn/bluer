@@ -24,10 +24,24 @@ export default (props: {username: any, users: any}) => {
             setRecipent(request);
         }
     }, [request])
+
+    useEffect(() => {
+        if(!props.users) return;
+        if(!props.users[props.username]) return;
+        if(!props.users[props.username].chats[recipent]) return;
+
+        const dict = props.users[props.username].chats[recipent];
+        const sortedList: any = [];
+
+        Object.entries(dict).map(([k,v]) => {
+            
+        })
+        
+    }, [props.users])
     
     return (
         <div className="fixed right-3 bottom-3 z-50">
-            {toggle && <div className="bg-base-100 w-60 p-3 rounded-md drop-shadow-md">
+            {toggle && <div className="bg-base-100 w-60 h-auto p-3 rounded-md drop-shadow-md">
                 {!recipent && chatters && <input 
                     type="text" 
                     placeholder="Search chats" 
@@ -39,7 +53,7 @@ export default (props: {username: any, users: any}) => {
                             <span className="text-xs">You have no previous chats.</span>
                         </div>
                     </div>}
-                <ul className="h-52 overflow-y-scroll">
+                <ul className="overflow-y-scroll">
                     {recipent && <li 
                     className="hover:text-primary hover:underline cursor-pointer" 
                     onClick={()=>{setRecipent(null); setRequest(null)}}>Back</li>}
@@ -56,16 +70,16 @@ export default (props: {username: any, users: any}) => {
                             exit={{height: 0}}
                             initial={{height:0}}
                             animate={{height: "15rem"}}
-                            className="w-full h-60 flex flex-col overflow-hidden">
+                            className="w-full h-full flex flex-col overflow-hidden">
                                 <div className={`flex flex-col-reverse w-full h-5/6 items-start overflow-scroll`}>
                                     {
                                     props.users[props.username].chats && props.users[props.username].chats[recipent] &&
-                                    Object.entries(props.users[props.username].chats[recipent])
+                                    [...Object.entries(props.users[props.username].chats[recipent])]
                                     .sort((a: any, z: any) => {
                                         return Number(z[0].replace(/\D/g,''))-Number(a[0].replace(/\D/g,''))})
                                     .map(([u,m]: any) => {
                                         return (
-                                            <Bubble sender={u.startsWith(props.username+':')}>
+                                            <Bubble key={u} sender={u.startsWith(props.username+':')}>
                                                 {m}
                                             </Bubble>
                                         )
@@ -85,7 +99,7 @@ export default (props: {username: any, users: any}) => {
                 </AnimatePresence>
             </div>}
             <div className="flex justify-end w-full">
-                <button onClick={()=>setToggle(!toggle)} className="btn m-1">{chat}</button>
+                <button onClick={()=>setToggle(!toggle)} className="btn btn-accent m-1">{chat}</button>
             </div>
         </div>
     )
