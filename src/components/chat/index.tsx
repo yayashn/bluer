@@ -28,6 +28,7 @@ export default (props: {username: any, users: any}) => {
     useEffect(() => {
         if(!props.users) return;
         if(!props.users[props.username]) return;
+        if(!props.users[props.username].chats) return;
         if(!props.users[props.username].chats[recipent]) return;
 
         const dict = props.users[props.username].chats[recipent];

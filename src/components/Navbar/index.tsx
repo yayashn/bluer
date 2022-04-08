@@ -1,9 +1,8 @@
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Position from "../common/Position";
 import logout from "../../firebase/logout";
 import { useRef, useState } from "react";
 import styled from "styled-components";
-import searchIcon from "../../assets/search";
 import { motion } from "framer-motion";
 
 
@@ -19,7 +18,7 @@ export default (props: {users: any, user: any, setUser: any}) => {
                 <div className="navbar w-11/12 bg-base-100 shadow-xl rounded-box">
                     <div className="flex-1"><Link to='/' className="btn btn-ghost normal-case text-xl">bluer</Link></div>
                         <div className="form-control relative mx-3">
-                            <input ref={el => searchRef.current = el} tabIndex={0} onChange={e => setSearch(e.currentTarget.value)} type="text" placeholder="Search for people" className={`${search !== '' && 'border-primary'} input input-sm h-full focus:outline-none focus:border-primary input-bordered`}/>
+                            <input ref={el => searchRef.current = el} tabIndex={0} onChange={e => setSearch(e.currentTarget.value)} type="text" placeholder="Search for people" className={`${search !== '' && 'border-primary'} input input-sm focus:outline-none focus:border-primary input-bordered`}/>
                             <Search/>
                             {search !== '' && <ul tabIndex={0} className="absolute top-10 w-full h-auto bg-base-300 rounded-md">
                                 {Object.values(props.users).map((u:any)=>{

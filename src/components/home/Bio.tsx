@@ -57,8 +57,8 @@ export default (props: {className?: string, posts: any, username: string, users:
                                 </div>  
                             </div>
                             {props.username !== userPage
-                            ? <FollowButton onClick={()=>setTimeout(() => {
-                                if(user.followers){
+                            ? <FollowButton extra onClick={()=>setTimeout(() => {
+                                if(user.followers && user.followers[props.username]){
                                     unfollow(props.username, userPage!)
                                 } else {
                                     follow(props.username, userPage!);
