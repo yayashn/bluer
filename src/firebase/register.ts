@@ -5,7 +5,7 @@ import { createUser } from "./user";
 export default async (username: string, password: string) => {
     try {
         const user = await createUserWithEmailAndPassword(auth, username, password);
-        createUser(username.toLowerCase());
+        createUser(username);
         return {
             success: 'alert-success',
             message: 'Registered succesfully, you may now login.',

@@ -4,6 +4,8 @@ import Alert from "./Alert"
 import Input from "./Input"
 import register from "../../firebase/register"
 import login from "../../firebase/login"
+import { uid } from "uid";
+import createIpsum from "corporate-ipsum";
  
 export default () => {
     const [alert, setAlert] = useState(['alert-error', '']);

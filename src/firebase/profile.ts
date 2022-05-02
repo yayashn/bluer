@@ -1,12 +1,12 @@
 import { ref, remove, set } from "firebase/database"
-import { db } from "../firebase-config";
+import { db, storage } from "../firebase-config";
+import { getDownloadURL, ref as storageRef, uploadBytes, uploadBytesResumable} from "firebase/storage";
 
 export const editInfo = (username: string, info: {name: string, bio: string}) => {
     username = username.toLowerCase();
     set(ref(db, `users/${username}/bio`), info.bio);
     set(ref(db, `users/${username}/name`), info.name);
 }
-
 export const follow = (username: string, user: string) => {
     username = username.toLowerCase();
     user = user.toLowerCase();

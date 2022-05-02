@@ -2,9 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-    background-color: rgb(15,21,36) !important;
+::-webkit-scrollbar {
+    background-color: rgba(255, 255, 255, 0);
+    width: 8px;
 }
-body {
-    background-color: rgba(195, 205, 231, 0) !important;
+
+::-webkit-scrollbar-track {
+    background-color: rgba(255, 255, 255, 0);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #70707063;
+    border-radius: 16px;
+}
+
+body::-webkit-scrollbar-button {
+    display:none;
+}
+
+.posts:empty::after {
+    content: 'User has no posts';
+    font-size: 20px;
+    margin: 10px;
+}
+
+.c:has(*:empty) {
+    display: none;
 }
